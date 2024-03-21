@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: "/:path*",
-        destination: "https://client.warpcast.com",
+        destination: "https://client.warpcast.com/:path*",
       },
     ];
   },
