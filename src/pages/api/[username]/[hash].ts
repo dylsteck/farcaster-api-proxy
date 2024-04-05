@@ -27,6 +27,10 @@ export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control", "s-maxage=3600");
   const { hash, username } = req.query;
 
+  if (!hash || !username) {
+    return res.status(400).json({ error: "Missing hash or username" });
+  }
+
   const warpcast = await fetch(
     `https://client.warpcast.com/v2/user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=3`
   );
