@@ -32,7 +32,7 @@ export default async function handler(req: any, res: any) {
   }
 
   const warpcast = await fetch(
-    `https://client.warpcast.com/v2/user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=3`
+    `https://client.warpcast.com/v2/user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=5`
   );
   const cast = await warpcast.json();
 
