@@ -31,10 +31,10 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: "Missing hash or username" });
   }
 
-  const warpcast = await fetch(
-    `https://client.warpcast.com/v2/user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=5`
+  const farcaster = await fetch(
+    `https://client.farcaster.xyz/v2/user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=5`
   );
-  const cast = await warpcast.json();
+  const cast = await farcaster.json();
 
   res.status(200).json(cast);
 }
