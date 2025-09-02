@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# farcaster-api-proxy
+
+This is a [Next.js](https://nextjs.org/) project using the App Router that proxies Farcaster API endpoints.
 
 ## Getting Started
 
@@ -14,9 +16,16 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/test](http://localhost:3000/test). This endpoint can be edited in `pages/api/[query].ts`.
+## API Routes
 
-The `pages/api` directory is mapped to `/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+All routes proxy to corresponding `client.farcaster.xyz/v2/` endpoints:
+
+- `/[username]` → `user-by-username?username=${username}`
+- `/[username]/[hash]` → `user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=5`
+- `/fids/[fid]` → `user?fid=${fid}`
+- `/search/casts` → `search-casts?q=${q}&limit=${limit}`
+- `/search/users` → `search-users?q=${q}&excludeSelf=${excludeSelf}&limit=${limit}&includeDirectCastAbility=${includeDirectCastAbility}`
+- `/search/summary` → `search-summary?q=${q}&maxChannels=${maxChannels}&maxUsers=${maxUsers}&maxMiniApps=${maxMiniApps}&maxTokens=${maxTokens}&addFollowersYouKnowContext=${addFollowersYouKnowContext}`
 
 ## Learn More
 
