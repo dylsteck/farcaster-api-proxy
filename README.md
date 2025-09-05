@@ -1,43 +1,82 @@
 # farcaster-api-proxy
 
-This is a [Next.js](https://nextjs.org/) project using the App Router that proxies Farcaster API endpoints.
+A lightweight Go REST API based on [farcaster-api-proxy](https://github.com/pugson/farcaster-api-proxy) by [pugson](https://github.com/pugson) that proxies requests to the Farcaster client API to avoid CORS issues when fetching cast data.
 
-## Getting Started
+## Usage
 
-First, run the development server:
+### Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+# Download dependencies
+go mod tidy
+# Run the server
+go run main.go
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Server starts on port 8080 (or PORT environment variable).
 
-## API Routes
+### API Endpoints
 
 All routes proxy to corresponding `client.farcaster.xyz/v2/` endpoints:
 
-- `/[username]` → `user-by-username?username=${username}`
-- `/[username]/[hash]` → `user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=5`
-- `/fids/[fid]` → `user?fid=${fid}`
-- `/search/casts` → `search-casts?q=${q}&limit=${limit}`
-- `/search/users` → `search-users?q=${q}&excludeSelf=${excludeSelf}&limit=${limit}&includeDirectCastAbility=${includeDirectCastAbility}`
-- `/search/summary` → `search-summary?q=${q}&maxChannels=${maxChannels}&maxUsers=${maxUsers}&maxMiniApps=${maxMiniApps}&maxTokens=${maxTokens}&addFollowersYouKnowContext=${addFollowersYouKnowContext}`
+- `GET /{username}` → `user-by-username?username=${username}`
+- `GET /{username}/{hash}` → `user-thread-casts?castHashPrefix=${hash}&username=${username}&limit=5`
+- `GET /fids/{fid}` → `user?fid=${fid}`
+- `GET /search/casts` → `search-casts?q=${q}&limit=${limit}`
+- `GET /search/users` → `search-users?q=${q}&excludeSelf=${excludeSelf}&limit=${limit}&includeDirectCastAbility=${includeDirectCastAbility}`
+- `GET /search/summary` → `search-summary?q=${q}&maxChannels=${maxChannels}&maxUsers=${maxUsers}&maxMiniApps=${maxMiniApps}&maxTokens=${maxTokens}&addFollowersYouKnowContext=${addFollowersYouKnowContext}`
+- `GET /health` - Health check
 
-## Learn More
+### Examples
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Get user by username
+curl http://localhost:8080/dwr
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Get cast thread data
+curl http://localhost:8080/dwr/0x123abc
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# Get user by FID
+curl http://localhost:8080/fids/3
 
-## Deploy on Vercel
+# Search casts
+curl "http://localhost:8080/search/casts?q=hello&limit=10"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Search users
+curl "http://localhost:8080/search/users?q=vitalik&limit=5"
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Search summary
+curl "http://localhost:8080/search/summary?q=ethereum"
+```
+
+Returns JSON data from Farcaster API with CORS headers and 1-hour cache.
+
+### Deploy
+
+#### Railway (Recommended)
+
+Railway provides an easy one-click deployment for Go applications:
+
+1. Fork this repository
+2. Connect your GitHub account to [Railway](https://railway.app)
+3. Create a new project and select your forked repository
+4. Railway will automatically detect the Go application and deploy it
+5. Your API will be available at the generated Railway URL
+
+Railway automatically handles:
+- Go build process
+- Environment variables (PORT is set automatically)
+- HTTPS certificates
+- Custom domains (if needed)
+
+#### Manual Deployment
+
+For other platforms, set the `PORT` environment variable for production deployment.
+
+```bash
+# Build the application
+go build -o farcaster-api-proxy
+
+# Run with custom port
+PORT=3000 ./farcaster-api-proxy
+```
